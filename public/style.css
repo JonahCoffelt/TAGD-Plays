@@ -1,37 +1,59 @@
-body {
+/* Prevent scrolling */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Container holding everything */
+.container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; /* center vertically */
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: sans-serif;
-    background-color: #333;
-    color: white;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+    height: 100%;
+    width: 100%;
 }
+
+
+.images-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* horizontally center everything */
+    justify-content: center; /* vertical centering if needed */
+    gap: 0.5rem; /* spacing between images */
+    width: 100%;
+}
+
+/* Logos / images */
+.logo, .team-image {
+    max-width: 150px;  /* fixed max-width in px for consistency */
+    width: 30vw;       /* responsive scaling */
+    height: auto;
+}
+
+/* Controller row (always a row) */
 .controller-pad {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    width: 100%;
+    align-items: center;
+    width: 90%;
     max-width: 800px;
-    background-color: red;
+    margin: 1rem 0;
 }
 
-/* --- Updated D-Pad Layout --- */
+/* Button layout grid (diamond shape) */
 .button-layout {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    background-color: orange;
-
-    justify-items: center;  /* center buttons horizontally in each cell */
-    align-items: center;    /* center buttons vertically in each cell */
+    justify-items: center;
+    align-items: center;
 }
 
+/* Buttons */
 .button {
     width: 80px;
     height: 80px;
@@ -39,51 +61,58 @@ body {
     border: none;
     color: white;
     font-size: 20px;
-    touch-action: manipulation;
     font-weight: bold;
     background-color: #555;
+    touch-action: manipulation;
 }
-/* .d-pad-btn:active { background-color: #777; } */
 
-/* Portrait: stack vertically, shrink buttons a bit */
+/* D-Pad positions */
+.up { grid-column: 2; grid-row: 1; }
+.left { grid-column: 1; grid-row: 2; }
+.right { grid-column: 3; grid-row: 2; }
+.down { grid-column: 2; grid-row: 3; }
+
+/* Action buttons colors */
+#btn-y { background-color: #4CAF50; }
+#btn-x { background-color: #008CBA; }
+#btn-b { background-color: #f44336; }
+#btn-a { background-color: #e6e600; }
+
+/* Portrait: shrink buttons slightly */
 @media (orientation: portrait) {
-    .controller-pad {
-        flex-direction: column;   /* stack D-Pad and ABXY vertically */
-        align-items: center;
-    }
-
     .button {
         width: 60px;
         height: 60px;
     }
 
-    .controller-image {
-        order: -1; /* put image above buttons */
-        margin-bottom: 1rem;
+    .portrait-only {
+        display: flex;   /* show portrait images */
+    }
+    .landscape-only {
+        display: none;   /* hide landscape images */
     }
 }
 
-/* Landscape: row layout, image in between */
+/* Landscape: images stacked between button layouts */
 @media (orientation: landscape) {
-    .controller-pad {
-        flex-direction: row;   /* keep side-by-side */
-        align-items: center;
-        justify-content: space-between;
+    .logo, .team-image {
+        max-width: 80px;  /* shrink images in landscape */
+        width: auto;      /* auto width for better stacking */
     }
 
-    .controller-image {
-        margin: 0 2rem; /* space between buttons */
+    .portrait-only {
+        display: none;
+    }
+    .landscape-only {
+        display: flex;    /* show landscape images */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+    }
+
+    .button {
+        width: 70px;
+        height: 70px;
     }
 }
-
-/* Place each button in diamond positions */
-.up { grid-column: 2; grid-row: 1; } /* top */
-.left { grid-column: 1; grid-row: 2; } /* left */
-.right { grid-column: 3; grid-row: 2; } /* right */
-.down { grid-column: 2; grid-row: 3; } /* bottom */
-
-#btn-y { background-color: #4CAF50; }
-#btn-x { background-color: #008CBA; }
-#btn-b { background-color: #f44336; }
-#btn-a { background-color: #e6e600; }
-/* .action-btn:active { filter: brightness(85%); } */

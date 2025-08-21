@@ -6,87 +6,99 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="controller-pad">
-        <div class="button-layout">
-            <button class="button up" id="btn-up" data-button="up">▲</button>
-            <button class="button left" id="btn-left" data-button="left">◀</button>
-            <button class="button right" id="btn-right" data-button="right">▶</button>
-            <button class="button down" id="btn-down" data-button="down">▼</button>
+    <div class="container">
+
+        <div class="portrait-only images-container">
+            <img src="/tagd.png" alt="TAGD Logo" class="logo">
+            <img id="team-image-portrait" src="" alt="Team Logo" class="team-image">
         </div>
 
-        <img id="team-image" src="" alt="Controller Logo" class="controller-image">
+        <!-- Controller -->
+        <div class="controller-pad">
+                
+            <!-- Left button layout -->
+            <div class="button-layout">
+                <button class="button up" id="btn-up" data-button="up">▲</button>
+                <button class="button left" id="btn-left" data-button="left">◀</button>
+                <button class="button right" id="btn-right" data-button="right">▶</button>
+                <button class="button down" id="btn-down" data-button="down">▼</button>
+            </div>
 
-        <div class="button-layout">
-            <button class="button up" id="btn-x" data-button="x">X</button>
-            <button class="button left" id="btn-y" data-button="y">Y</button>
-            <button class="button right" id="btn-a" data-button="a">A</button>
-            <button class="button down" id="btn-b" data-button="b">B</button>
+            <!-- Images in between the two layouts -->
+            <div class="images-container landscape-only">
+                <img src="/tagd.png" alt="TAGD Logo" class="logo">
+                <img id="team-image-landscape" src="" alt="Team Logo" class="team-image">
+            </div>
+
+            <!-- Right button layout -->
+            <div class="button-layout">
+                <button class="button up" id="btn-x" data-button="x">X</button>
+                <button class="button left" id="btn-y" data-button="y">Y</button>
+                <button class="button right" id="btn-a" data-button="a">A</button>
+                <button class="button down" id="btn-b" data-button="b">B</button>
+            </div>
         </div>
+
     </div>
+
 <script>
-    let playerTeam = null;
-    let serverSessionId = null;
+let playerTeam = null;
+let serverSessionId = null;
 
-    // disable buttons until assigned
-    document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+// Disable buttons until team is assigned
+document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+function enableButtons() {
+    document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+}
 
-    function enableButtons() {
-        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
-    }
+// Set the team image
+function setTeamImage(team) {
+    const img1 = document.getElementById("team-image-portrait");
+    if (!img1) return;
+    img1.src = team === "A" ? "/isaac.png" : "/foce.png";
 
-    function setTeamImage(team) {
-        const img = document.getElementById("team-image");
-        if (!img) return;
+    const img2 = document.getElementById("team-image-landscape");
+    if (!img2) return;
+    img2.src = team === "A" ? "/isaac.png" : "/foce.png";
+}
 
-        if (team === "A") {
-            img.src = "/isaac.png"; // <-- replace with your actual Team A image
-        } else if (team === "B") {
-            img.src = "/foce.png"; // <-- replace with your actual Team B image
+// Load saved playerData
+const savedData = JSON.parse(localStorage.getItem("playerData") || "null");
+
+// Ask server for team + session info
+fetch('/assign-team')
+    .then(res => res.json())
+    .then(data => {
+        serverSessionId = data.sessionId;
+
+        if (savedData && savedData.sessionId === serverSessionId) {
+            playerTeam = savedData.team;
+            setTeamImage(playerTeam);
+            console.log("Restored Team:", playerTeam);
+        } else {
+            playerTeam = data.team;
+            setTeamImage(playerTeam);
+            localStorage.setItem("playerData", JSON.stringify({
+                team: playerTeam,
+                sessionId: serverSessionId
+            }));
+            console.log("Assigned new Team:", playerTeam);
         }
-    }
-
-    // Check if we have saved assignment
-    const savedData = JSON.parse(localStorage.getItem("playerData") || "null");
-
-    // Ask server for team + session info
-    fetch('/assign-team')
-        .then(res => res.json())
-        .then(data => {
-            serverSessionId = data.sessionId;
-
-            if (savedData && savedData.sessionId === serverSessionId) {
-                // Reuse saved team if sessionId matches
-                playerTeam = savedData.team;
-                console.log("Restored Team:", playerTeam);
-            } else {
-                // Use server's assignment, and save it
-                playerTeam = data.team;
-                localStorage.setItem("playerData", JSON.stringify({
-                    team: playerTeam,
-                    sessionId: serverSessionId
-                }));
-                console.log("Assigned new Team:", playerTeam);
-            }
-            enableButtons();
-        });
-
-    // Button press handler
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', () => {
-            if (!playerTeam) return;
-            const buttonName = button.dataset.button;
-            fetch('/button-press', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ button: buttonName, team: playerTeam })
-            });
-        });
+        enableButtons();
     });
 
-
-
+// Button press handler
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+        if (!playerTeam) return;
+        const buttonName = button.dataset.button;
+        fetch('/button-press', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ button: buttonName, team: playerTeam })
+        });
+    });
+});
 </script>
-
-
 </body>
 </html>
