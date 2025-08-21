@@ -11,36 +11,19 @@ app.post('/button-press', (req, res) => {
     const timestamp = new Date().toLocaleString();
     console.log(`[${timestamp}] Controller input received: Button "${button}" was pressed.`);
 
+    const keyMap = {
+        'up': 'up',
+        'down': 'down',
+        'left': 'left',
+        'right': 'right',
+        'a': 'a',
+        'b': 'b',
+        'x': 'x',
+        'y': 'y',
+    };
+    
     // Map your button inputs to specific keyboard keys
-    switch (button) {
-        case 'up':
-            robot.keyTap('up');
-            break;
-        case 'down':
-            robot.keyTap('down');
-            break;
-        case 'left':
-            robot.keyTap('left');
-            break;
-        case 'right':
-            robot.keyTap('right');
-            break;
-        case 'a':
-            robot.keyTap('a'); // Simulates pressing the space bar
-            break;
-        case 'b':
-            robot.keyTap('b'); // Simulates pressing the enter key
-            break;
-        case 'x':
-            robot.keyTap('x'); // Simulates pressing the 'x' key
-            break;
-        case 'y':
-            robot.keyTap('y'); // Simulates pressing the 'y' key
-            break;
-        default:
-            console.log("No keyboard action mapped for this button.");
-            break;
-    }
+    robot.keyTap(keyMap[button]);
 
     res.status(200).send('Button press received!');
 });
