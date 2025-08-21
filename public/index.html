@@ -92,24 +92,43 @@
         </div>
     </div>
     <script>
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', () => {
-                const buttonName = button.dataset.button;
-                fetch('/button-press', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ button: buttonName })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Failed to send button press');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+    let playerTeam = localStorage.getItem("playerTeam");
+
+    // disable buttons until assigned
+    document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+    function enableButtons() {
+        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+    }
+
+    if (playerTeam) {
+        console.log("Restored Team from storage:", playerTeam);
+        enableButtons();
+    } else {
+        // No team yet → ask server for one
+        fetch('/assign-team')
+            .then(res => res.json())
+            .then(data => {
+                playerTeam = data.team;
+                localStorage.setItem("playerTeam", playerTeam);
+                console.log("Assigned to Team", playerTeam);
+                enableButtons();
+            });
+    }
+
+    // Always send team with button press
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+            if (!playerTeam) return;
+            const buttonName = button.dataset.button;
+            fetch('/button-press', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ button: buttonName, team: playerTeam })
             });
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
