@@ -87,3 +87,20 @@ app.post('/admin-mapping', (req, res) => {
         res.status(400).json({ success: false, error: "Invalid mapping format" });
     }
 });
+
+// --- Admin API ---
+app.get('/admin-settings', (req, res) => {
+    res.json(gameSettings);
+});
+
+app.post('/admin-settings', (req, res) => {
+    const { triggerProbability, holdDuration } = req.body;
+    if (typeof triggerProbability === "number" && typeof holdDuration === "number") {
+        gameSettings.triggerProbability = triggerProbability;
+        gameSettings.holdDuration = holdDuration;
+        console.log("⚙️ Game settings updated:", gameSettings);
+        res.json({ success: true, settings: gameSettings });
+    } else {
+        res.status(400).json({ success: false, error: "Invalid settings format" });
+    }
+});
