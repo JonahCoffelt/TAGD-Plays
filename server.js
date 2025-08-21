@@ -9,6 +9,12 @@ app.use(express.static('public'));
 let nextTeam = "A"; 
 const sessionId = Date.now().toString(); // new session ID each restart
 
+// --- Settings ---
+let gameSettings = {
+    triggerProbability: 0.5,  // 50% chance
+    holdDuration: 1000         // milliseconds
+};
+
 // Default key mapping per team
 let keyMappings = {
     A: {
@@ -42,9 +48,20 @@ app.get('/assign-team', (req, res) => {
 app.post('/button-press', (req, res) => {
     const { button, team } = req.body;
     const timestamp = new Date().toLocaleString();
+
+    if (Math.random() >= gameSettings.triggerProbability) {
+        return res.status(200).send('Ignored (probability rule)');
+    }
+
     console.log(`[${timestamp}] Team ${team}: Button "${button}" pressed.`);
   
-    robot.keyTap(keyMappings[team][button]);
+    let key = keyMappings[team][button];
+
+    robot.keyToggle(key, "down");
+    setTimeout(() => {
+        robot.keyToggle(key, "up");
+    }, gameSettings.holdDuration);
+
 
     res.status(200).send('Button press received!');
 });
@@ -68,5 +85,22 @@ app.post('/admin-mapping', (req, res) => {
         res.json({ success: true, mappings: keyMappings });
     } else {
         res.status(400).json({ success: false, error: "Invalid mapping format" });
+    }
+});
+
+// --- Admin API ---
+app.get('/admin-settings', (req, res) => {
+    res.json(gameSettings);
+});
+
+app.post('/admin-settings', (req, res) => {
+    const { triggerProbability, holdDuration } = req.body;
+    if (typeof triggerProbability === "number" && typeof holdDuration === "number") {
+        gameSettings.triggerProbability = triggerProbability;
+        gameSettings.holdDuration = holdDuration;
+        console.log("⚙️ Game settings updated:", gameSettings);
+        res.json({ success: true, settings: gameSettings });
+    } else {
+        res.status(400).json({ success: false, error: "Invalid settings format" });
     }
 });
