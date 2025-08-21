@@ -18,10 +18,10 @@
                 
             <!-- Left button layout -->
             <div class="button-layout">
-                <button class="button up" id="btn-up" data-button="up">▲</button>
-                <button class="button left" id="btn-left" data-button="left">◀</button>
-                <button class="button right" id="btn-right" data-button="right">▶</button>
-                <button class="button down" id="btn-down" data-button="down">▼</button>
+                <button class="arrow-button button up" id="btn-up" data-button="up">▲</button>
+                <button class="arrow-button button left" id="btn-left" data-button="left">◀</button>
+                <button class="arrow-button button right" id="btn-right" data-button="right">▶</button>
+                <button class="arrow-button button down" id="btn-down" data-button="down">▼</button>
             </div>
 
             <!-- Images in between the two layouts -->
@@ -55,11 +55,11 @@ function enableButtons() {
 function setTeamImage(team) {
     const img1 = document.getElementById("team-image-portrait");
     if (!img1) return;
-    img1.src = team === "A" ? "/isaac.png" : "/foce.png";
+    img1.src = team === "A" ? "/luigi.png" : "/toad.png";
 
     const img2 = document.getElementById("team-image-landscape");
     if (!img2) return;
-    img2.src = team === "A" ? "/isaac.png" : "/foce.png";
+    img2.src = team === "A" ? "/luigi.png" : "/toad.png";
 }
 
 // Load saved playerData
