@@ -6,9 +6,10 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
             font-family: sans-serif;
             background-color: #333;
@@ -17,18 +18,10 @@
             -webkit-user-select: none;
             touch-action: manipulation;
         }
-
-        .controller-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
         .controller-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto;
+            grid-template-rows: auto auto;
             gap: 20px;
             width: 90%;
             max-width: 600px;
@@ -41,8 +34,6 @@
             width: 150px;
             height: 150px;
             gap: 10px;
-            /* New: Align content to the start (left) */
-            justify-self: start;
         }
         .d-pad-btn {
             width: 60px;
@@ -67,8 +58,6 @@
             width: 150px;
             height: 150px;
             gap: 10px;
-            /* New: Align content to the end (right) */
-            justify-self: end;
         }
         .action-btn {
             width: 60px;
@@ -88,59 +77,39 @@
     </style>
 </head>
 <body>
-    <div class="controller-wrapper">
-        <div class="controller-grid">
-            <div class="d-pad-container">
-                <button class="d-pad-btn" id="btn-up" data-button="up">▲</button>
-                <button class="d-pad-btn" id="btn-left" data-button="left">◀</button>
-                <button class="d-pad-btn" id="btn-right" data-button="right">▶</button>
-                <button class="d-pad-btn" id="btn-down" data-button="down">▼</button>
-            </div>
-            <div class="action-buttons">
-                <button class="action-btn" id="btn-x" data-button="x">X</button>
-                <button class="action-btn" id="btn-y" data-button="y">Y</button>
-                <button class="action-btn" id="btn-a" data-button="a">A</button>
-                <button class="action-btn" id="btn-b" data-button="b">B</button>
-            </div>
+    <div class="controller-grid">
+        <div class="d-pad-container">
+            <button class="d-pad-btn" id="btn-up" data-button="up">▲</button>
+            <button class="d-pad-btn" id="btn-left" data-button="left">◀</button>
+            <button class="d-pad-btn" id="btn-right" data-button="right">▶</button>
+            <button class="d-pad-btn" id="btn-down" data-button="down">▼</button>
+        </div>
+        <div class="action-buttons">
+            <button class="action-btn" id="btn-x" data-button="x">X</button>
+            <button class="action-btn" id="btn-y" data-button="y">Y</button>
+            <button class="action-btn" id="btn-a" data-button="a">A</button>
+            <button class="action-btn" id="btn-b" data-button="b">B</button>
         </div>
     </div>
     <script>
-        document.querySelectorAll('.d-pad-btn').forEach(button => {
-            const buttonName = button.dataset.button;
-            button.addEventListener('mousedown', () => sendAction(buttonName, 'down'));
-            button.addEventListener('mouseup', () => sendAction(buttonName, 'up'));
-            button.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                sendAction(buttonName, 'down');
-            });
-            button.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                sendAction(buttonName, 'up');
-            });
-        });
-
-        document.querySelectorAll('.action-btn').forEach(button => {
+        document.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', () => {
                 const buttonName = button.dataset.button;
-                sendAction(buttonName, 'tap');
+                fetch('/button-press', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ button: buttonName })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to send button press');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
-
-        function sendAction(button, action) {
-            fetch('/controller-action', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ button, action })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Failed to send button action');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
     </script>
 </body>
 </html>
