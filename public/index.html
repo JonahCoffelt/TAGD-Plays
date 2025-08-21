@@ -13,6 +13,9 @@
             <button class="button right" id="btn-right" data-button="right">▶</button>
             <button class="button down" id="btn-down" data-button="down">▼</button>
         </div>
+
+        <img id="team-image" src="" alt="Controller Logo" class="controller-image">
+
         <div class="button-layout">
             <button class="button up" id="btn-x" data-button="x">X</button>
             <button class="button left" id="btn-y" data-button="y">Y</button>
@@ -29,6 +32,17 @@
 
     function enableButtons() {
         document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+    }
+
+    function setTeamImage(team) {
+        const img = document.getElementById("team-image");
+        if (!img) return;
+
+        if (team === "A") {
+            img.src = "/isaac.png"; // <-- replace with your actual Team A image
+        } else if (team === "B") {
+            img.src = "/foce.png"; // <-- replace with your actual Team B image
+        }
     }
 
     // Check if we have saved assignment
@@ -68,6 +82,9 @@
             });
         });
     });
+
+
+
 </script>
 
 
