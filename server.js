@@ -6,13 +6,13 @@ const port = 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
-let nextTeam = "A"; // start with Team A
+let nextTeam = "A"; 
+const sessionId = Date.now().toString(); // new session ID each restart
 
 app.get('/assign-team', (req, res) => {
     const assignedTeam = nextTeam;
-    // Alternate for next player
     nextTeam = (nextTeam === "A") ? "B" : "A";
-    res.json({ team: assignedTeam });
+    res.json({ team: assignedTeam, sessionId });
 });
 
 app.post('/button-press', (req, res) => {
@@ -21,19 +21,42 @@ app.post('/button-press', (req, res) => {
     console.log(`[${timestamp}] Team ${team}: Button "${button}" pressed.`);
 
     const keyMap = {
-        'up': 'up',
-        'down': 'down',
-        'left': 'left',
-        'right': 'right',
-        'a': 'a',
-        'b': 'b',
-        'x': 'x',
-        'y': 'y',
+        'A': {
+            'up': 'q',
+            'down': 'w',
+            'left': 'e',
+            'right': 'r',
+            'a': 't',
+            'b': 'y',
+            'x': 'u',
+            'y': 'i',
+        },
+        'B': {
+            'up': 'a',
+            'down': 's',
+            'left': 'd',
+            'right': 'f',
+            'a': 'g',
+            'b': 'h',
+            'x': 'j',
+            'y': 'k',
+        }
+        
     };
 
-    if (keyMap[button]) {
-        robot.keyTap(keyMap[button]);
-    }
+    const keyMapTeamB = {
+        'up': 'a',
+        'down': 's',
+        'left': 'd',
+        'right': 'f',
+        'a': 'g',
+        'b': 'h',
+        'x': 'j',
+        'y': 'k',
+    };
+
+  
+    robot.keyTap(keyMap[team][button]);
 
     res.status(200).send('Button press received!');
 });
