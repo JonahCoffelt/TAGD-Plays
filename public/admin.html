@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Key Mapping</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #222; color: white; }
+        h1 { color: #ffcc00; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #555; padding: 8px; text-align: center; }
+        input { width: 80px; padding: 4px; }
+        button { padding: 10px 20px; background: #4CAF50; border: none; color: white; font-size: 16px; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Admin - Update Key Mappings</h1>
+    <form id="mappingForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Button</th>
+                    <th>Team A Key</th>
+                    <th>Team B Key</th>
+                </tr>
+            </thead>
+            <tbody id="mappingTable"></tbody>
+        </table>
+        <button type="submit">Save Mappings</button>
+    </form>
+
+    <script>
+        async function loadMappings() {
+            const res = await fetch('/admin-mapping');
+            const data = await res.json();
+            const table = document.getElementById('mappingTable');
+            table.innerHTML = '';
+
+            const buttons = Object.keys(data.A);
+            buttons.forEach(button => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${button}</td>
+                    <td><input type="text" name="A-${button}" value="${data.A[button]}"></td>
+                    <td><input type="text" name="B-${button}" value="${data.B[button]}"></td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        document.getElementById('mappingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = document.querySelectorAll('input');
+            const newMapping = { A: {}, B: {} };
+            inputs.forEach(input => {
+                const [team, button] = input.name.split('-');
+                newMapping[team][button] = input.value;
+            });
+
+            await fetch('/admin-mapping', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newMapping)
+            });
+            alert('Mappings updated!');
+        });
+
+        loadMappings();
+    </script>
+</body>
+</html>
