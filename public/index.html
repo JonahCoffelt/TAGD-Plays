@@ -91,8 +91,9 @@
             <button class="action-btn" id="btn-b" data-button="b">B</button>
         </div>
     </div>
-    <script>
-    let playerTeam = localStorage.getItem("playerTeam");
+<script>
+    let playerTeam = null;
+    let serverSessionId = null;
 
     // disable buttons until assigned
     document.querySelectorAll('button').forEach(btn => btn.disabled = true);
@@ -101,22 +102,32 @@
         document.querySelectorAll('button').forEach(btn => btn.disabled = false);
     }
 
-    if (playerTeam) {
-        console.log("Restored Team from storage:", playerTeam);
-        enableButtons();
-    } else {
-        // No team yet → ask server for one
-        fetch('/assign-team')
-            .then(res => res.json())
-            .then(data => {
-                playerTeam = data.team;
-                localStorage.setItem("playerTeam", playerTeam);
-                console.log("Assigned to Team", playerTeam);
-                enableButtons();
-            });
-    }
+    // Check if we have saved assignment
+    const savedData = JSON.parse(localStorage.getItem("playerData") || "null");
 
-    // Always send team with button press
+    // Ask server for team + session info
+    fetch('/assign-team')
+        .then(res => res.json())
+        .then(data => {
+            serverSessionId = data.sessionId;
+
+            if (savedData && savedData.sessionId === serverSessionId) {
+                // Reuse saved team if sessionId matches
+                playerTeam = savedData.team;
+                console.log("Restored Team:", playerTeam);
+            } else {
+                // Use server's assignment, and save it
+                playerTeam = data.team;
+                localStorage.setItem("playerData", JSON.stringify({
+                    team: playerTeam,
+                    sessionId: serverSessionId
+                }));
+                console.log("Assigned new Team:", playerTeam);
+            }
+            enableButtons();
+        });
+
+    // Button press handler
     document.querySelectorAll('button').forEach(button => {
         button.addEventListener('click', () => {
             if (!playerTeam) return;
@@ -129,6 +140,7 @@
         });
     });
 </script>
+
 
 </body>
 </html>
