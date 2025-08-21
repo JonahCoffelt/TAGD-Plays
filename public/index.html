@@ -13,12 +13,17 @@
             <button class="button right" id="btn-right" data-button="right">▶</button>
             <button class="button down" id="btn-down" data-button="down">▼</button>
         </div>
+
+        <img id="team-image" src="" alt="Controller Logo" class="controller-image">
+
         <div class="button-layout">
             <button class="button up" id="btn-x" data-button="x">X</button>
             <button class="button left" id="btn-y" data-button="y">Y</button>
             <button class="button right" id="btn-a" data-button="a">A</button>
             <button class="button down" id="btn-b" data-button="b">B</button>
         </div>
+    </div>
+
     </div>
     <script>
     let playerTeam = localStorage.getItem("playerTeam");
@@ -30,8 +35,20 @@
         document.querySelectorAll('button').forEach(btn => btn.disabled = false);
     }
 
+    function setTeamImage(team) {
+        const img = document.getElementById("team-image");
+        if (!img) return;
+
+        if (team === "A") {
+            img.src = "/isaac.png"; // <-- replace with your actual Team A image
+        } else if (team === "B") {
+            img.src = "/foce.png"; // <-- replace with your actual Team B image
+        }
+    }
+
     if (playerTeam) {
         console.log("Restored Team from storage:", playerTeam);
+        setTeamImage(playerTeam);
         enableButtons();
     } else {
         // No team yet → ask server for one
@@ -41,6 +58,7 @@
                 playerTeam = data.team;
                 localStorage.setItem("playerTeam", playerTeam);
                 console.log("Assigned to Team", playerTeam);
+                setTeamImage(playerTeam);
                 enableButtons();
             });
     }
@@ -57,6 +75,9 @@
             });
         });
     });
+
+
+
 </script>
 
 </body>
