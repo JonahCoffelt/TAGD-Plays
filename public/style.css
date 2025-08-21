@@ -1,0 +1,58 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #333;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+.controller-pad {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 90%;
+    max-width: 600px;
+    background-color: red;
+}
+
+/* --- Updated D-Pad Layout --- */
+.button-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background-color: orange;
+
+    justify-items: center;  /* center buttons horizontally in each cell */
+    align-items: center;    /* center buttons vertically in each cell */
+}
+
+.button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 20px;
+    touch-action: manipulation;
+    font-weight: bold;
+    background-color: #555;
+}
+/* .d-pad-btn:active { background-color: #777; } */
+
+/* Place each button in diamond positions */
+.up { grid-column: 2; grid-row: 1; } /* top */
+.left { grid-column: 1; grid-row: 2; } /* left */
+.right { grid-column: 3; grid-row: 2; } /* right */
+.down { grid-column: 2; grid-row: 3; } /* bottom */
+
+#btn-y { background-color: #4CAF50; }
+#btn-x { background-color: #008CBA; }
+#btn-b { background-color: #f44336; }
+#btn-a { background-color: #e6e600; }
+/* .action-btn:active { filter: brightness(85%); } */

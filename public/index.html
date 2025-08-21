@@ -3,92 +3,21 @@
 <head>
     <title>Web Controller</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: sans-serif;
-            background-color: #333;
-            color: white;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-        }
-        .controller-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 20px;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        /* --- Updated D-Pad Layout --- */
-        .d-pad-container {
-            display: grid;
-            grid-template-areas: ". up ." "left . right" ". down .";
-            width: 150px;
-            height: 150px;
-            gap: 10px;
-        }
-        .d-pad-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 20px;
-            touch-action: manipulation;
-            font-weight: bold;
-            background-color: #555;
-        }
-        #btn-up { grid-area: up; }
-        #btn-left { grid-area: left; }
-        #btn-right { grid-area: right; }
-        #btn-down { grid-area: down; }
-        .d-pad-btn:active { background-color: #777; }
-
-        .action-buttons {
-            display: grid;
-            grid-template-areas: ". y ." "x . b" ". a .";
-            width: 150px;
-            height: 150px;
-            gap: 10px;
-        }
-        .action-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 20px;
-            touch-action: manipulation;
-            font-weight: bold;
-        }
-        #btn-y { background-color: #4CAF50; grid-area: x; }
-        #btn-x { background-color: #008CBA; grid-area: y; }
-        #btn-b { background-color: #f44336; grid-area: a; }
-        #btn-a { background-color: #e6e600; grid-area: b; }
-        .action-btn:active { filter: brightness(85%); }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="controller-grid">
-        <div class="d-pad-container">
-            <button class="d-pad-btn" id="btn-up" data-button="up">▲</button>
-            <button class="d-pad-btn" id="btn-left" data-button="left">◀</button>
-            <button class="d-pad-btn" id="btn-right" data-button="right">▶</button>
-            <button class="d-pad-btn" id="btn-down" data-button="down">▼</button>
+    <div class="controller-pad">
+        <div class="button-layout">
+            <button class="button up" id="btn-up" data-button="up">▲</button>
+            <button class="button left" id="btn-left" data-button="left">◀</button>
+            <button class="button right" id="btn-right" data-button="right">▶</button>
+            <button class="button down" id="btn-down" data-button="down">▼</button>
         </div>
-        <div class="action-buttons">
-            <button class="action-btn" id="btn-x" data-button="x">X</button>
-            <button class="action-btn" id="btn-y" data-button="y">Y</button>
-            <button class="action-btn" id="btn-a" data-button="a">A</button>
-            <button class="action-btn" id="btn-b" data-button="b">B</button>
+        <div class="button-layout">
+            <button class="button up" id="btn-x" data-button="x">X</button>
+            <button class="button left" id="btn-y" data-button="y">Y</button>
+            <button class="button right" id="btn-a" data-button="a">A</button>
+            <button class="button down" id="btn-b" data-button="b">B</button>
         </div>
     </div>
 <script>
