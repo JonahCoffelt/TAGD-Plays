@@ -1,15 +1,24 @@
 const express = require('express');
 const app = express();
-const robot = require('robotjs'); // 🤖 Import the robotjs module
+const robot = require('robotjs');
 const port = 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
 
+let nextTeam = "A"; // start with Team A
+
+app.get('/assign-team', (req, res) => {
+    const assignedTeam = nextTeam;
+    // Alternate for next player
+    nextTeam = (nextTeam === "A") ? "B" : "A";
+    res.json({ team: assignedTeam });
+});
+
 app.post('/button-press', (req, res) => {
-    const button = req.body.button;
+    const { button, team } = req.body;
     const timestamp = new Date().toLocaleString();
-    console.log(`[${timestamp}] Controller input received: Button "${button}" was pressed.`);
+    console.log(`[${timestamp}] Team ${team}: Button "${button}" pressed.`);
 
     const keyMap = {
         'up': 'up',
@@ -21,15 +30,15 @@ app.post('/button-press', (req, res) => {
         'x': 'x',
         'y': 'y',
     };
-    
-    // Map your button inputs to specific keyboard keys
-    robot.keyTap(keyMap[button]);
+
+    if (keyMap[button]) {
+        robot.keyTap(keyMap[button]);
+    }
 
     res.status(200).send('Button press received!');
 });
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
-    console.log(`Access the controller at http://localhost:${port}`);
-    console.log("Keyboard control enabled. Press buttons on your phone to trigger key presses on the server computer.");
+    console.log(`Access controller at http://localhost:${port}`);
 });
