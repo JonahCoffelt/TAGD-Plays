@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const robot = require('robotjs');
+const { GlobalKeyboardListener } = require("node-global-key-listener");
 const port = 3000;
 
 app.use(express.json());
@@ -14,6 +15,9 @@ let gameSettings = {
     triggerProbability: 1.0,  // 50% chance
     holdDuration: 200         // milliseconds
 };
+
+// Add global input toggle state
+let inputEnabled = true; // Start with input enabled
 
 let activePresses = {}; // track if a team/button is active
 
@@ -41,6 +45,19 @@ let keyMappings = {
     },
 };
 
+// Set up global keyboard listener
+const v = new GlobalKeyboardListener();
+
+v.addListener(function (e, down) {
+    if (e.name === 'T' && e.state === "DOWN") {
+        inputEnabled = !inputEnabled;
+        const status = inputEnabled ? "ENABLED" : "DISABLED";
+        console.log(`🎮 Input ${status} - Press 'T' to toggle`);
+    }
+});
+
+console.log("🎮 Global hotkey listener active - Press 'T' to toggle input");
+
 app.get('/assign-team', (req, res) => {
     const assignedTeam = nextTeam;
     nextTeam = (nextTeam === "A") ? "B" : "A";
@@ -48,6 +65,11 @@ app.get('/assign-team', (req, res) => {
 });
 
 app.post('/button-press', (req, res) => {
+    // Check if input is globally disabled
+    if (!inputEnabled) {
+        return res.status(200).send('Ignored (input disabled)');
+    }
+
     const { button, team } = req.body;
     const timestamp = new Date().toLocaleString();
 
@@ -66,22 +88,25 @@ app.post('/button-press', (req, res) => {
 
     activePresses[`${team}-${button}`] = true;
 
-
-     robot.keyToggle(key, "down");
+    robot.keyToggle(key, "down");
     setTimeout(() => {
         robot.keyToggle(key, "up");
         activePresses[`${team}-${button}`] = false; // release lock
     }, gameSettings.holdDuration);
 
-
     res.send('Processed');
+});
+
+// Add endpoint to check input status
+app.get('/input-status', (req, res) => {
+    res.json({ inputEnabled });
 });
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
     console.log(`Access controller at http://localhost:${port}`);
+    console.log(`🎮 Input is currently ${inputEnabled ? 'ENABLED' : 'DISABLED'}`);
 });
-
 
 // --- Admin API ---
 app.get('/admin-mapping', (req, res) => {
@@ -99,7 +124,6 @@ app.post('/admin-mapping', (req, res) => {
     }
 });
 
-// --- Admin API ---
 app.get('/admin-settings', (req, res) => {
     res.json(gameSettings);
 });
