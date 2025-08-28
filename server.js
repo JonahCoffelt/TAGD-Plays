@@ -11,8 +11,8 @@ const sessionId = Date.now().toString(); // new session ID each restart
 
 // --- Settings ---
 let gameSettings = {
-    triggerProbability: 0.5,  // 50% chance
-    holdDuration: 1000         // milliseconds
+    triggerProbability: 1.0,  // 50% chance
+    holdDuration: 200         // milliseconds
 };
 
 let activePresses = {}; // track if a team/button is active
@@ -20,25 +20,25 @@ let activePresses = {}; // track if a team/button is active
 // Default key mapping per team
 let keyMappings = {
     A: {
+        up: 'w',
+        down: 's',
+        left: 'a',
+        right: 'd',
+        a: 'space',
+        b: 'shift',
+        x: '1',
+        y: '2'
+    },
+    B: {
         up: 'up',
         down: 'down',
         left: 'left',
         right: 'right',
-        a: 'a',
-        b: 'b',
-        x: 'x',
-        y: 'y'
+        a: 'o',
+        b: 'p',
+        x: '9',
+        y: '0'
     },
-    B: {
-        up: 'w',
-        down: 's',
-        left: 'd',
-        right: 'd',
-        a: 'z',
-        b: 'c',
-        x: 'v',
-        y: 'e'
-    }
 };
 
 app.get('/assign-team', (req, res) => {
