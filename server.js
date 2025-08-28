@@ -15,6 +15,8 @@ let gameSettings = {
     holdDuration: 1000         // milliseconds
 };
 
+let activePresses = {}; // track if a team/button is active
+
 // Default key mapping per team
 let keyMappings = {
     A: {
@@ -57,13 +59,22 @@ app.post('/button-press', (req, res) => {
   
     let key = keyMappings[team][button];
 
-    robot.keyToggle(key, "down");
+    // If already pressed and not released yet, ignore new input
+    if (activePresses[`${team}-${button}`]) {
+        return res.status(429).send('Ignored (already active)');
+    }
+
+    activePresses[`${team}-${button}`] = true;
+
+
+     robot.keyToggle(key, "down");
     setTimeout(() => {
         robot.keyToggle(key, "up");
+        activePresses[`${team}-${button}`] = false; // release lock
     }, gameSettings.holdDuration);
 
 
-    res.status(200).send('Button press received!');
+    res.send('Processed');
 });
 
 app.listen(port, () => {

@@ -44,6 +44,8 @@
 <script>
 let playerTeam = null;
 let serverSessionId = null;
+let lastSent = 0;
+const cooldown = 200; // ms
 
 // Disable buttons until team is assigned
 document.querySelectorAll('button').forEach(btn => btn.disabled = true);
@@ -88,17 +90,33 @@ fetch('/assign-team')
     });
 
 // Button press handler
+// document.querySelectorAll('button').forEach(button => {
+//     button.addEventListener('click', () => {
+//         if (!playerTeam) return;
+//         const buttonName = button.dataset.button;
+//         fetch('/button-press', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ button: buttonName, team: playerTeam })
+//         });
+//     });
+// });
 document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-        if (!playerTeam) return;
-        const buttonName = button.dataset.button;
-        fetch('/button-press', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ button: buttonName, team: playerTeam })
-        });
+  button.addEventListener('click', () => {
+    const now = Date.now();
+    if (now - lastSent < cooldown) return; // ignore if too soon
+    lastSent = now;
+
+    const buttonName = button.dataset.button;
+    fetch('/button-press', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ button: buttonName, team: playerTeam })
     });
+  });
 });
+
+
 </script>
 </body>
 </html>
