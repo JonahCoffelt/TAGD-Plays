@@ -57,11 +57,11 @@ function enableButtons() {
 function setTeamImage(team) {
     const img1 = document.getElementById("team-image-portrait");
     if (!img1) return;
-    img1.src = team === "A" ? "/luigi.png" : "/toad.png";
+    img1.src = team === "A" ? "/yoshi.png" : "/tom-nook.png";
 
     const img2 = document.getElementById("team-image-landscape");
     if (!img2) return;
-    img2.src = team === "A" ? "/luigi.png" : "/toad.png";
+    img2.src = team === "A" ? "/yoshi.png" : "/tom-nook.png";
 }
 
 // Load saved playerData
@@ -90,17 +90,6 @@ fetch('/assign-team')
     });
 
 // Button press handler
-// document.querySelectorAll('button').forEach(button => {
-//     button.addEventListener('click', () => {
-//         if (!playerTeam) return;
-//         const buttonName = button.dataset.button;
-//         fetch('/button-press', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({ button: buttonName, team: playerTeam })
-//         });
-//     });
-// });
 document.querySelectorAll('button').forEach(button => {
   button.addEventListener('click', () => {
     const now = Date.now();

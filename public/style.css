@@ -76,15 +76,15 @@ html, body {
 .arrow-button:active { background-color: #333; }
 
 /* Action buttons colors */
-#btn-y { background-color: #4CAF50; }
+#btn-a { background-color: #4CAF50; }
 #btn-x { background-color: #008CBA; }
 #btn-b { background-color: #f44336; }   
-#btn-a { background-color: #e6e600; }
+#btn-y { background-color: #e6e600; }
 
-#btn-y:active { background-color: #368d39; }
+#btn-a:active { background-color: #368d39; }
 #btn-x:active { background-color: #006080; }
 #btn-b:active { background-color: #bd2419; }   
-#btn-a:active { background-color: #a6a600; }
+#btn-y:active { background-color: #a6a600; }
 
 /* Portrait: shrink buttons slightly */
 @media (orientation: portrait) {
