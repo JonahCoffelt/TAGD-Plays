@@ -18,24 +18,24 @@ let gameSettings = {
 // Default key mapping per team
 let keyMappings = {
     A: {
-        up: 'q',
-        down: 'w',
-        left: 'e',
-        right: 'r',
-        a: 't',
-        b: 'y',
-        x: 'u',
-        y: 'i'
+        up: 'up',
+        down: 'down',
+        left: 'left',
+        right: 'right',
+        a: 'a',
+        b: 'b',
+        x: 'x',
+        y: 'y'
     },
     B: {
-        up: 'a',
+        up: 'w',
         down: 's',
         left: 'd',
-        right: 'f',
-        a: 'g',
-        b: 'h',
-        x: 'j',
-        y: 'k'
+        right: 'd',
+        a: 'z',
+        b: 'c',
+        x: 'v',
+        y: 'e'
     }
 };
 
